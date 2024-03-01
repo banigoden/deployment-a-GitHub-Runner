@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+
+  # COMMITIZEN #################################################################
+  - hooks:
+      - id: commitizen
+      - id: commitizen-branch
+        stages:
+          - push
+    repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.15.0
