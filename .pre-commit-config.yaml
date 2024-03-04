@@ -12,6 +12,37 @@ repos:
       - id: check-yaml
       - id: detect-private-key
 
+
+  # # ANSIBLE  ################################################################
+  # - repo: https://github.com/ansible/ansible-lint
+  #   rev: v24.2.0
+  #   hooks:
+  #     - id: ansible-lint
+
+  # # YAML ####################################################################
+  # - repo: https://github.com/adrienverge/yamllint
+  #   rev: v1.35.1
+  #   hooks:
+  #     - id: yamllint
+
+  # TERRAFORM ##############################################################
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.0
+    hooks:
+      - id: terraform_fmt
+
+   # Docker hooks
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v3.0.1
+    hooks:
+      - id: docker-compose-check
+
+# # MARKDOWN LINT ###############################################################
+#   - repo: https://github.com/markdownlint/markdownlint
+#     rev: v0.12.0
+#     hooks:
+#       - id: markdownlint
+
   # COMMITIZEN #################################################################
   - hooks:
       - id: commitizen
@@ -19,4 +50,4 @@ repos:
         stages:
           - push
     repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.15.0
+    rev: v3.16.0

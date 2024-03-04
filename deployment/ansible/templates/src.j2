@@ -1,0 +1,11 @@
+[Unit]
+Description=GitHub Runner
+
+[Service]
+ExecStart=/home/{{ github_runner_user }}/actions-runner/svc.sh run
+WorkingDirectory=/home/{{ github_runner_user }}/actions-runner
+User={{ github_runner_user }}
+Restart=always
+
+[Install]
+WantedBy=default.target

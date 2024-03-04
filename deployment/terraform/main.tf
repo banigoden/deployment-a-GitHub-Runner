@@ -5,7 +5,7 @@ provider "aws" {
 
 # Declare the VPC resource
 resource "aws_vpc" "my_vpc" {
-  cidr_block       = "192.168.0.0/16"
+  cidr_block = var.vpc_cidr_block
 
   tags = {
     Name = "vpc_production"
@@ -15,9 +15,9 @@ resource "aws_vpc" "my_vpc" {
 #the public subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
-  cidr_block              = "192.168.1.0/24" #2.0
-  availability_zone        = "eu-central-1a"
-  map_public_ip_on_launch  = true
+  cidr_block              = var.subnet_cidr_block
+  availability_zone       = "eu-central-1a"
+  map_public_ip_on_launch = true
 }
 
 
@@ -54,9 +54,9 @@ resource "aws_route_table_association" "public_association" {
 
 # The private subnet
 resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.my_vpc.id
-  cidr_block              = "192.168.2.0/24"
-  availability_zone        = "eu-central-1b"
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = var.private_subnet_cidr_block
+  availability_zone = "eu-central-1b"
 }
 
 # Create a private route table
@@ -96,9 +96,25 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+# resource "aws_key_pair" "deployer" {
+#   key_name   = "deployer-key"
+#   public_key = tls_private_key.ec2_key.public_key_openssh
+# }
+
+# Generate SSH Key
+resource "tls_private_key" "ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "ec2-django" {
+  content  = tls_private_key.ec2_key.private_key_pem
+  filename = "EC2-django"
+}
+
 # Create an AWS instance
 resource "aws_instance" "django" {
-  ami                         = "ami-0a23a9827c6dab833"
+  ami                         = var.ami_number
   instance_type               = "t2.micro"
   key_name                    = "EC2-django"
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
@@ -109,33 +125,13 @@ resource "aws_instance" "django" {
     Name = "web-production"
   }
 
-  # # Wait for SSH to become available
-  # provisioner "remote-exec" {
-
-  #    connection {
-  #     type        = "ssh"
-  #     user        = "ec2-user"  # Replace with your SSH username
-  #     private_key = file("/Users/denisbandurin/Desktop/django_project/terraform/EC2-django.pem")  # Replace with your private key file path
-  #     host        = self.public_ip  # Use the public IP of the instance
-  #   }
-
-  #   inline = [
-  #     "echo 'Waiting for SSH to become available...'",
-  #     "SLEEP_SECONDS=60",
-  #     "sleep $SLEEP_SECONDS",
-  #     # "until nc -zv -w 2 ${self.public_ip} 22; do sleep 5; done",
-  #     "until ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /Users/denisbandurin/Desktop/django_project/terraform/EC2-django.pem ec2-user@${self.public_ip} 'echo SSH is available'; do",
-  #     "echo 'SSH is now available.'"
-  #   ]
+  # # Pass the public IP to Ansible inventory file
+  # provisioner "local-exec" {
+  #   command = "echo ${self.public_ip} > /Users/denisbandurin/Desktop/django_project/deployment/ansible/inventory.ini"
   # }
 
-  # Pass the public IP to Ansible inventory file
-  provisioner "local-exec" {
-    command = "echo ${self.public_ip} > /Users/denisbandurin/Desktop/django_project/ansible/inventory.txt"
-  }
-
-  # Run Ansible playbook
-  provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=/Users/denisbandurin/Desktop/django_project/terraform/EC2-django.pem /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
-  }
+  # # Run Ansible playbook
+  # provisioner "local-exec" {
+  #   command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=${tls_private_key.ec2_key.ec2-django} /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
+  # }
 }
