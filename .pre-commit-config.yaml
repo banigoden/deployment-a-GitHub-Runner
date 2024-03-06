@@ -13,11 +13,11 @@ repos:
       - id: detect-private-key
 
 
-  # # ANSIBLE  ################################################################
-  # - repo: https://github.com/ansible/ansible-lint
-  #   rev: v24.2.0
-  #   hooks:
-  #     - id: ansible-lint
+  # ANSIBLE  ################################################################
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v24.2.0
+    hooks:
+      - id: ansible-lint
 
   # # YAML ####################################################################
   # - repo: https://github.com/adrienverge/yamllint

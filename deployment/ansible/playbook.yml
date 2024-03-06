@@ -4,39 +4,87 @@
   become: true
   gather_facts: true
   tasks:
-
-  - name: Create user and home directory
-    user:
-      name: ec2-user
-      createhome: yes
-      shell: /bin/bash
-
-  - name: Install PostgreSQL and Python3
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
+    - name: Install PostgreSQL and Python3
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
         - python3
         - postgresql15
+        - docker.io
+        - vim
+        - net-tools
+      when: "'Debian' in ansible_distribution or 'Ubuntu' in ansible_distribution or 'Amazon' in ansible_distribution"
+      tags:
+        - configuration
 
-  - name: Install GitHub Runner
-    shell: |
-      cd /home/ec2-user
-      mkdir actions-runner
-      cd actions-runner
-      wget https://github.com/actions/runner/releases/download/v2.282.1/actions-runner-linux-x64-2.282.1.tar.gz
-      tar xzf ./actions-runner-linux-x64-2.282.1.tar.gz
-      rm actions-runner-linux-x64-2.282.1.tar.gz
-      # ./run.sh
+    - name: Install PostgreSQL and Python3 (for Red Hat)
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python3
+        - postgresql15
+        - docker
+        - vim-enhanced
+      when: "'RedHat' in ansible_distribution"
+      tags:
+        - configuration
 
-  - name: Create systemd unit template
-    template:
-      src: github_runner.service.j2
-      dest: /etc/systemd/system/github_runner.service
-    notify: Restart GitHub Runner
+    - name: Install GitHub Runner
+      ansible.builtin.get_url:
+        url: "https://github.com/actions/runner/releases/download/v2.282.1/actions-runner-linux-x64-2.282.1.tar.gz"
+        dest: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
+        mode: "0644"
+      tags:
+        - configuration
+
+    - name: Set permissions for GitHub Runner archive
+      ansible.builtin.file:
+        path: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
+        mode: "0644"
+      tags:
+        - configuration
+
+    - name: Extract GitHub Runner
+      ansible.builtin.unarchive:
+        src: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
+        dest: "/home/ec2-user/actions-runner"
+        remote_src: true
+      tags:
+        - configuration
+
+    - name: Remove archive
+      ansible.builtin.file:
+        path: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
+        state: absent
+      tags:
+        - configuration
+
+    - name: Create user for GitHub Actions Runner
+      ansible.builtin.user:
+        name: github-runner
+        state: present
+        createhome: true
+      tags:
+        - configuration
+
+    - name: Create systemd unit template
+      ansible.builtin.template:
+        src: src.j2
+        dest: "/etc/systemd/system/src"
+        owner: ec2-user
+        group: ec2-user
+        mode: "0644"
+        enabled: true
+      notify: Restart GitHub Runner
+      tags:
+        - configuration
 
   handlers:
-  - name: Restart GitHub Runner
-    systemd:
-      name: github_runner
-      state: restarted
+    - name: Restart GitHub Runner
+      ansible.builtin.service:
+        name: src
+        state: restarted
+      tags:
+        - configuration
