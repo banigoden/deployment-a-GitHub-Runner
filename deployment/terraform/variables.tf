@@ -27,3 +27,8 @@ variable "ami_number" {
   type        = string
   default     = "ami-0a23a9827c6dab833"
 }
+
+variable "instance_names" {
+  type    = list(string)
+  default = ["django", "monitoring"]
+}

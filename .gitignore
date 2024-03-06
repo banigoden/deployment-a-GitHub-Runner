@@ -49,8 +49,8 @@ override.tf.json
 terraform.rc
 .hcl
 
-/ansible/inventory
-/ansible/EC2-django.pem
+/deployment/ansible/inventory
+/deployment/ansible/EC2-django.pem
 
 .idea/
 .DS_Store
