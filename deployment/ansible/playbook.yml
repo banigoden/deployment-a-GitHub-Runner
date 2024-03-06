@@ -39,13 +39,6 @@
       tags:
         - configuration
 
-    - name: Set permissions for GitHub Runner archive
-      ansible.builtin.file:
-        path: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
-        mode: "0644"
-      tags:
-        - configuration
-
     - name: Extract GitHub Runner
       ansible.builtin.unarchive:
         src: "/home/ec2-user/actions-runner/actions-runner-linux-x64-2.282.1.tar.gz"
