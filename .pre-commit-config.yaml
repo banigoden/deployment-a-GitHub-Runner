@@ -38,10 +38,10 @@ repos:
       - id: docker-compose-check
 
 # MARKDOWN LINT ##############################################################
-#   - repo: https://github.com/markdownlint/markdownlint
-#     rev: v0.12.0
-#     hooks:
-#       - id: markdownlint
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.12.0
+    hooks:
+      - id: markdownlint
 
   # COMMITIZEN #################################################################
   - hooks:
