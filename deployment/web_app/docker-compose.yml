@@ -1,0 +1,28 @@
+---
+version: '1'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: denisbandurin
+      POSTGRES_USER: web_user
+      POSTGRES_PASSWORD: pass1234
+    volumes:
+      - ./docker/volumes/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  django_app:
+    build: .
+    container_name: django_container
+    command: >
+        sh -c "python manage.py migrate
+        && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres

@@ -1,0 +1,22 @@
+{% extends "web_application/base.html" %}
+
+{% block title %}
+All employee
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for employee in employees %}
+            <li>
+                {{ employee.first_name }} {{ employee.second_name }}
+                <ul>
+                    <li><strong>Department:</strong> {{ employee.department }}</li>
+                    <li><strong>Email:</strong> {{ employee.email }}</li>
+                    <li><strong>Date:</strong> {{ employee.date }}</li>
+                    <li><strong>Level:</strong> {{ employee.level }}</li>
+                </ul>
+             <p> Total numbers of employee: {{total_employee}} </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

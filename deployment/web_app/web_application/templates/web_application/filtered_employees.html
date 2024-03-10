@@ -1,0 +1,14 @@
+{% extends "web_application/base.html" %}
+
+{% block title %}
+Filtered Employees
+{% endblock %}
+
+{% block content %}
+    <h2>{{ filter_criteria }}</h2>
+    <ul>
+        {% for employee in filtered_employees %}
+            <li>{{ employee.first_name }} {{ employee.second_name }} - {{ employee.department }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

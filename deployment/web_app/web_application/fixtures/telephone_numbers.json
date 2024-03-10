@@ -1,0 +1,11 @@
+[
+    {
+      "model": "your_app.telephonenumber",
+      "pk": 1,
+      "fields": {
+        "employee": 1,
+        "number": "123-456-7890",
+        "type": "Work"
+      }
+    }
+]
