@@ -1,0 +1,76 @@
+---
+- name: Install apt tools
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Add key for  docker  repo
+  become: true
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repo
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >
+      "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu
+      {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Update packages
+  ansible.builtin.apt:
+    update_cache: true
+    allow_unauthenticated: true
+
+- name: Change apt cache policy
+  ansible.builtin.command: apt-cache policy docker-ce
+  changed_when: false
+
+- name: Install packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python3-pip
+    - pipenv
+    - git
+    - libsasl2-dev
+    - libldap2-dev
+    - libssl-dev
+    - python-setuptools
+    - corkscrew
+    - python3-dev
+    - docker-ce
+    - mysql-client-core-8.0
+    - docker-compose
+    - jq
+
+- name: Py modules
+  ansible.builtin.pip:
+    name:
+      - passlib
+      - docker
+      - docker-compose
+      - pymysql
+
+- name: Create Docker.d dir
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Template Proxy config
+  ansible.builtin.template:
+    src: http-proxy.conf.j2
+    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+    mode: '0755'
+  notify:
+    - Restart Docker

@@ -113,6 +113,12 @@ resource "aws_instance" "django" {
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
 
+
+  # Run Ansible playbook
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=$EC2-${var.instance_names[0]} /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
+  }
+
   tags = {
     Name = "web-production"
   }
@@ -133,9 +139,4 @@ resource "aws_instance" "monitoring" {
 # # Pass the public IP to Ansible inventory file
 # provisioner "local-exec" {
 #   command = "echo ${self.public_ip} > /Users/denisbandurin/Desktop/django_project/deployment/ansible/inventory.ini"
-# }
-
-# # Run Ansible playbook
-# provisioner "local-exec" {
-#   command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=${tls_private_key.ec2_key.ec2-django} /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
 # }
