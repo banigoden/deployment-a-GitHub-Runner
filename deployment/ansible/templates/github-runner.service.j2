@@ -1,0 +1,15 @@
+[Unit]
+Description=GitHub Runner Service
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/github-runner/{{ github_runner_name }}
+ExecStart=/opt/github-runner/actions-runner/runsvc.sh
+Restart=always
+RestartSec=3
+User={{ runner_user }}
+Group={{ runner_user }}
+KillMode=process
+
+[Install]
+WantedBy=default.target
