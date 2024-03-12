@@ -1,2 +1,40 @@
 ---
-# vars file for install_docker
+apt_packages:
+  - python3-pip
+  - pipenv
+  - git
+  - libsasl2-dev
+  - libldap2-dev
+  - libssl-dev
+  - python-setuptools
+  - corkscrew
+  - python3-dev
+  - docker-ce
+  - mysql-client-core-8.0
+  - docker-compose
+  - jq
+
+pip_modules:
+  - passlib
+  - docker
+  - docker-compose
+  - pymysql
+
+redhat_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - python3-pip
+  - python3-devel
+  - mysql-8.0*
+  - python3-setuptools
+  - git
+  - jq
+  - vim
+
+pip_modules_red:
+  - passlib
+  - docker
+  - docker-compose
+  - pymysql
+  - pipenv

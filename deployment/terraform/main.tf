@@ -104,19 +104,26 @@ resource "local_file" "ec2_files" {
   filename = "EC2-${var.instance_names[count.index]}"
 }
 
+resource "local_sensitive_file" "pem_files" {
+  count                = length(var.instance_names)
+  filename             = "~/.ssh/EC2-${var.instance_names[count.index]}.pem"
+  file_permission      = "0600"
+  directory_permission = "0700"
+  content              = tls_private_key.ec2_keys[count.index].private_key_pem
+}
+
 # Create an AWS instance
 resource "aws_instance" "django" {
   ami                         = var.ami_number
   instance_type               = "t2.micro"
-  key_name                    = "EC2-${var.instance_names[0]}"
+  key_name                    = "EC2-${var.instance_names[0]}.pem"
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
 
 
-  # Run Ansible playbook
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=$EC2-${var.instance_names[0]} /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
+    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory.ini ${path.module}/ansible/playbook.yml"
   }
 
   tags = {
@@ -127,7 +134,7 @@ resource "aws_instance" "django" {
 resource "aws_instance" "monitoring" {
   ami                         = var.ami_number
   instance_type               = "t2.micro"
-  key_name                    = "EC2-${var.instance_names[1]}"
+  key_name                    = "EC2-${var.instance_names[1]}.pem"
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
@@ -136,7 +143,3 @@ resource "aws_instance" "monitoring" {
     Name = "monitoring"
   }
 }
-# # Pass the public IP to Ansible inventory file
-# provisioner "local-exec" {
-#   command = "echo ${self.public_ip} > /Users/denisbandurin/Desktop/django_project/deployment/ansible/inventory.ini"
-# }

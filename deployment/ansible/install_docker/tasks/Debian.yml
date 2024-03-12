@@ -1,13 +1,8 @@
 ---
 - name: Install apt tools
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name: "{{ apt_packages }}"
     state: present
-  loop:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - software-properties-common
 
 - name: Add key for  docker  repo
   become: true
@@ -34,30 +29,12 @@
 
 - name: Install packages
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name: "{{ apt_packages }}"
     state: present
-  loop:
-    - python3-pip
-    - pipenv
-    - git
-    - libsasl2-dev
-    - libldap2-dev
-    - libssl-dev
-    - python-setuptools
-    - corkscrew
-    - python3-dev
-    - docker-ce
-    - mysql-client-core-8.0
-    - docker-compose
-    - jq
 
-- name: Py modules
+- name: Install Python modules
   ansible.builtin.pip:
-    name:
-      - passlib
-      - docker
-      - docker-compose
-      - pymysql
+    name: "{{ pip_modules }}"
 
 - name: Create Docker.d dir
   ansible.builtin.file:
@@ -66,11 +43,3 @@
     owner: root
     group: root
     mode: '0644'
-
-- name: Template Proxy config
-  ansible.builtin.template:
-    src: http-proxy.conf.j2
-    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
-    mode: '0755'
-  notify:
-    - Restart Docker

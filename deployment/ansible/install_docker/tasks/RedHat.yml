@@ -12,25 +12,15 @@
   ansible.builtin.yum:
     update_cache: true
 
-- name: Install Docker
+- name: Install Docker and other packages
   ansible.builtin.dnf:
-    name: "{{ item }}"
+    name: "{{ redhat_packages }}"
     state: present
     disable_gpg_check: true
-  loop:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
-    - python3-pip
-    - python3-devel
-    - mysql-8.0*
-    - python3-setuptools
-    - git
-    - jq
-    - vim
 
 # yamllint disable
 - name: Docker create config directory
+
   ansible.builtin.file:
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
@@ -60,14 +50,9 @@
     dest: /usr/local/bin/docker-compose
     mode: '0754'
 
-- name: Install Py modules
+- name: Install Python modules
   ansible.builtin.pip:
-    name:
-      - passlib
-      - docker
-      - docker-compose
-      - pymysql
-      - pipenv
+    name: "{{ pip_modules_red }}"
 
 - name: Create Docker.d dir
   ansible.builtin.file:
@@ -76,12 +61,3 @@
     owner: root
     group: root
     mode: '0644'
-
-- name: Template Proxy config
-  ansible.builtin.template:
-    src: http-proxy.conf.j2
-    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
-    mode: '0755'
-  notify:
-    - Daemon_reload
-    - Restart_docker

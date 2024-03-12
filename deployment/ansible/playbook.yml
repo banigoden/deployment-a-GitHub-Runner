@@ -4,5 +4,9 @@
   become: true
   gather_facts: true
   roles:
-    - install_docker
-    - install_github_runner
+    - role: install_docker
+      tags:
+        - docker
+    - role: install_github_runner
+      tags:
+        - github_runner
