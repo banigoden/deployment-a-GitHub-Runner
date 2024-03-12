@@ -27,19 +27,31 @@ resource "local_sensitive_file" "pem_files" {
 # Create an AWS instance
 resource "aws_instance" "django" {
   ami                         = var.ami_number
-  instance_type               = var.size
-  key_name                    = [aws_key_pair.ssh_key.fingerprint]
+  instance_type               = "t2.micro"
+  key_name                    = "EC2-${var.instance_names[0]}.pem"
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
 
 
   provisioner "local-exec" {
-    depends_on = [aws_instance.django]
-    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory ${path.module}/ansible/playbook.yml --private-key ${path.module}/private_key.pem" 
+    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory.ini ${path.module}/ansible/playbook.yml"
   }
 
   tags = {
     Name = "web-production"
+  }
+}
+
+resource "aws_instance" "monitoring" {
+  ami                         = var.ami_number
+  instance_type               = "t2.micro"
+  key_name                    = "EC2-${var.instance_names[1]}.pem"
+  vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
+  subnet_id                   = aws_subnet.public_subnet.id
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "monitoring"
   }
 }
