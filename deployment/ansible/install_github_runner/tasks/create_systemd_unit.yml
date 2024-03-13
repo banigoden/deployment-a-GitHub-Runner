@@ -1,0 +1,52 @@
+---
+- name: Create user for GitHub Actions Runner
+  ansible.builtin.user:
+    name: github-runner
+    state: present
+    createhome: true
+  tags:
+    - configuration
+
+- name: Install GitHub Runner
+  ansible.builtin.get_url:
+    url: >
+      "https://github.com/actions/runner/releases/download
+      /v2.282.1/actions-runner-linux-x64-2.282.1.tar.gz"
+    dest: "{{ actions_runner_tar_path }}"
+    mode: "0644"
+  tags:
+    - configuration
+
+- name: Extract GitHub Runner
+  ansible.builtin.unarchive:
+    src: "{{ actions_runner_tar_path }}"
+    dest: "/home/ec2-user/actions-runner"
+    remote_src: true
+  tags:
+    - configuration
+
+- name: Remove archive
+  ansible.builtin.file:
+    path: "{{ actions_runner_tar_path }}"
+    state: absent
+  tags:
+    - configuration
+
+- name: Add user to 'docker' group
+  ansible.builtin.user:
+    name: github-runner
+    group: docker
+    append: true
+  tags:
+    - configuration
+
+- name: Create Systemd Unit
+  ansible.builtin.template:
+    src: "templates/github-runner.service.j2"
+    dest: "/etc/systemd/system/{{ github_runner_name }}.service"
+    owner: ec2-user
+    group: ec2-user
+    mode: "0644"
+    enabled: true
+  tags:
+    - configuration

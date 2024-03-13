@@ -1,0 +1,7 @@
+---
+# defaults file for install_github_runner
+apt_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common

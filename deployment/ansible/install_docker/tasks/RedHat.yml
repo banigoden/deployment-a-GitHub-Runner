@@ -1,0 +1,63 @@
+---
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: docker_ce
+    description: docker_ce
+    baseurl: >
+     https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    enabled: true
+    gpgcheck: true
+
+- name: Update cache
+  ansible.builtin.yum:
+    update_cache: true
+
+- name: Install Docker and other packages
+  ansible.builtin.dnf:
+    name: "{{ redhat_packages }}"
+    state: present
+    disable_gpg_check: true
+
+# yamllint disable
+- name: Docker create config directory
+
+  ansible.builtin.file:
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    state: directory
+  loop:
+    - {dest: '/root/.docker/', mode: '0644', owner: 'root', group: 'root' }
+    - {dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'scp', group: 'scp' }
+
+- name: Docker config proxy
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - {dest: '/root/.docker/config.json', mode: '0644', owner: 'root', group: 'root' }
+    - {dest: '/var/lib/home/scp/.docker/config.json', mode: '0644', owner: 'scp', group: 'scp' }
+# yamllint enable
+
+- name: Install Docker Compose
+  ansible.builtin.get_url:
+    url: >
+      https://github.com/docker/compose/releases/download/v2.13.0/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0754'
+
+- name: Install Python modules
+  ansible.builtin.pip:
+    name: "{{ pip_modules_red }}"
+
+- name: Create Docker.d dir
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
