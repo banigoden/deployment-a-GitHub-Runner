@@ -18,9 +18,7 @@
     state: present
     disable_gpg_check: true
 
-# yamllint disable
 - name: Docker create config directory
-
   ansible.builtin.file:
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
@@ -28,8 +26,8 @@
     group: "{{ item.group }}"
     state: directory
   loop:
-    - {dest: '/root/.docker/', mode: '0644', owner: 'root', group: 'root' }
-    - {dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'scp', group: 'scp' }
+    - { dest: '/root/.docker/', mode: '0644', owner: 'root', group: 'root' }
+    - { dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'scp', group: 'scp' }
 
 - name: Docker config proxy
   ansible.builtin.template:
@@ -39,8 +37,8 @@
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
   loop:
-    - {dest: '/root/.docker/config.json', mode: '0644', owner: 'root', group: 'root' }
-    - {dest: '/var/lib/home/scp/.docker/config.json', mode: '0644', owner: 'scp', group: 'scp' }
+    - { dest: '/root/.docker/config.json', mode: '0644', owner: 'root', group: 'root' }
+    - { dest: '/var/lib/home/scp/.docker/config.json', mode: '0644', owner: 'scp', group: 'scp' }
 # yamllint enable
 
 - name: Install Docker Compose
