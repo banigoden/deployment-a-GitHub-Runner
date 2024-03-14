@@ -1,0 +1,11 @@
+---
+exclude_paths: []
+
+skip_list: []
+
+use_default_rules: true
+verbosity: 0
+warn_list:
+  - internal-error  # Unexpected internal error
+
+mock_modules: []

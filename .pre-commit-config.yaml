@@ -1,3 +1,5 @@
+default_language_version:
+  ruby: 2.7.2
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
 
@@ -11,25 +13,35 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: detect-private-key
+      - id: detect-aws-credentials
+        args: [ --allow-missing-credentials ]
+      - id: mixed-line-ending
+      - id: check-added-large-files
+      - id: check-case-conflict
 
 
   # ANSIBLE  ################################################################
   - repo: https://github.com/ansible/ansible-lint
-    rev: v24.2.0
+    rev: v24.2.1
     hooks:
       - id: ansible-lint
+        args: ['-c', '.ci/ansible-lint']
 
   # YAML ####################################################################
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
     hooks:
       - id: yamllint
+        args: ['-c=.ci/yamllint']
 
   # TERRAFORM ##############################################################
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.88.0
     hooks:
       - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_tflint
+      - id: terraform_providers_lock
 
    # Docker hooks
   - repo: https://github.com/IamTheFij/docker-pre-commit
@@ -50,4 +62,4 @@ repos:
         stages:
           - push
     repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.16.0
+    rev: v3.18.4
