@@ -1,7 +1,7 @@
 ---
 - name: Create user for GitHub Actions Runner
   ansible.builtin.user:
-    name: github-runner
+    name: "{{ runner_user }}"
     state: present
     createhome: true
   tags:
@@ -34,19 +34,25 @@
 
 - name: Add user to 'docker' group
   ansible.builtin.user:
-    name: github-runner
+    name: "{{ runner_user }}"
     group: docker
     append: true
   tags:
     - configuration
 
+- name: Configuring runner
+  shell: ./config.cmd --url https://github.com/lek-x/vmware_terraform --token AIJK6DVV3G3YKDZXWXGTDZDF6V5KK 
+  register: confrunner
+  changed_when: confrunner.rc != 2
+  failed_when: confrunner.rc != 0
+
 - name: Create Systemd Unit
   ansible.builtin.template:
     src: "templates/github-runner.service.j2"
     dest: "/etc/systemd/system/{{ github_runner_name }}.service"
-    owner: ec2-user
-    group: ec2-user
+    owner: "{{ runner_user }}"
+    group: "{{ runner_user }}"
     mode: "0644"
-    enabled: true
   tags:
     - configuration
+  notify: 

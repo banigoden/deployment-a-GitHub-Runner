@@ -2,6 +2,6 @@
 # vars file for install_github_runner
 github_runner_name: github-runner
 actions_runner_tar_path: >
-  "/home/ec2-user/actions-runner
+  "/home/{{runner_user }}/actions-runner
   /actions-runner-linux-x64-2.282.1.tar.gz"
-runner_user: ec2-user
+runner_user: git-runner

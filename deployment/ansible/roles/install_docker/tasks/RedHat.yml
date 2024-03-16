@@ -39,7 +39,6 @@
   loop:
     - { dest: '/root/.docker/config.json', mode: '0644', owner: 'root', group: 'root' }
     - { dest: '/var/lib/home/scp/.docker/config.json', mode: '0644', owner: 'scp', group: 'scp' }
-# yamllint enable
 
 - name: Install Docker Compose
   ansible.builtin.get_url:
