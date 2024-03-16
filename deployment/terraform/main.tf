@@ -4,6 +4,12 @@ resource "tls_private_key" "ec2_keys" {
   rsa_bits  = 4096
 }
 
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "deployer-key"
+  public_key = public_key = tls_private_key.ec2_keys.public_key_openssh
+}
+
+
 resource "local_file" "ec2_files" {
   count    = length(var.instance_names)
   content  = tls_private_key.ec2_keys[count.index].private_key_pem
@@ -21,31 +27,19 @@ resource "local_sensitive_file" "pem_files" {
 # Create an AWS instance
 resource "aws_instance" "django" {
   ami                         = var.ami_number
-  instance_type               = "t2.micro"
-  key_name                    = "EC2-${var.instance_names[0]}.pem"
+  instance_type               = var.size
+  key_name                    = [aws_key_pair.ssh_key.fingerprint]
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
 
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory.ini ${path.module}/ansible/playbook.yml"
+    depends_on = [aws_instance.django]
+    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory ${path.module}/ansible/playbook.yml --private-key ${path.module}/private_key.pem" 
   }
 
   tags = {
     Name = "web-production"
-  }
-}
-
-resource "aws_instance" "monitoring" {
-  ami                         = var.ami_number
-  instance_type               = "t2.micro"
-  key_name                    = "EC2-${var.instance_names[1]}.pem"
-  vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
-  subnet_id                   = aws_subnet.public_subnet.id
-  associate_public_ip_address = true
-
-  tags = {
-    Name = "monitoring"
   }
 }

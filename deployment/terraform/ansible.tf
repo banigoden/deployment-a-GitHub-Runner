@@ -4,8 +4,7 @@ resource "local_file" "ansible_inventory" {
   content = templatefile(
     "${path.module}/ansible/inventory",
     {
-      ???          = var.???
-      ???    = ???
+      region         = var.aws_region
     }
   )
   depends_on = [aws_instance.django]
