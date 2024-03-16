@@ -35,9 +35,8 @@ resource "aws_instance" "django" {
 
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.module}/ansible/inventory/inventory.ini ${path.module}/ansible/playbook.yml"
+    command = "ansible-playbook -i '${aws_instance.django.public_ip},' -u ec2-user --private-key=${tls_private_key.ec2_key.ec2-django}.pem /Users/denisbandurin/Desktop/django_project/ansible/playbook.yml"
   }
-
   tags = {
     Name = "web-production"
   }
