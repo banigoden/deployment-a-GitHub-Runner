@@ -1,5 +1,5 @@
 ---
-apt_packages:
+install_docker_apt_packages:
   - python3-pip
   - pipenv
   - git
@@ -14,13 +14,13 @@ apt_packages:
   - docker-compose
   - jq
 
-pip_modules:
+install_docker_pip_modules:
   - passlib
   - docker
   - docker-compose
   - pymysql
 
-redhat_packages:
+install_docker_redhat_packages:
   - docker-ce
   - docker-ce-cli
   - containerd.io
@@ -32,7 +32,7 @@ redhat_packages:
   - jq
   - vim
 
-pip_modules_red:
+install_docker_pip_modules_red:
   - passlib
   - docker
   - docker-compose
