@@ -1,10 +1,11 @@
-resource "local_file" "ansible_inventory" {
-  filename        = "${path.module}/templates/inventory.tftpl"
+
+resource "local_file" "inventory" {
+  filename        = "${path.module}./ansible/inventory.tpl"
   file_permission = "0640"
-  content = templatefile(
-    "${path.module}/ansible/inventory",
+  content = templatefile("${path.module}/templates/inventory.tftpl",
     {
-      region         = var.aws_region
+      region             = var.aws_region
+      instance_public_ip = aws_instance.django.public_ip
     }
   )
   depends_on = [aws_instance.django]

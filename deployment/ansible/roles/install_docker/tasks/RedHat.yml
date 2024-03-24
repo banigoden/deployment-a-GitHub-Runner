@@ -29,17 +29,6 @@
     - { dest: '/root/.docker/', mode: '0644', owner: 'root', group: 'root' }
     - { dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'scp', group: 'scp' }
 
-- name: Docker config proxy
-  ansible.builtin.template:
-    src: config.json.j2
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-  loop:
-    - { dest: '/root/.docker/config.json', mode: '0644', owner: 'root', group: 'root' }
-    - { dest: '/var/lib/home/scp/.docker/config.json', mode: '0644', owner: 'scp', group: 'scp' }
-
 - name: Install Docker Compose
   ansible.builtin.get_url:
     url: >

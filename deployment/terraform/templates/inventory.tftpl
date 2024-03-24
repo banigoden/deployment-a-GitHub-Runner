@@ -4,4 +4,4 @@ ansible_ssh_private_key_file=/deployment/terraform/private_key.pem
 region=${region}
 
 [all]
-${aws_instance.django.public_ip}
+${instance_public_ip}

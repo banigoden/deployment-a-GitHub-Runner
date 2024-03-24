@@ -28,7 +28,16 @@ variable "ami_number" {
   default     = "ami-0a23a9827c6dab833"
 }
 
-variable "instance_names" {
-  type    = list(string)
-  default = ["django", "monitoring"]
+variable "instance_name" {
+  type    = string
+  default = "django"
+}
+
+variable "size" {
+  type    = string
+  default = "t2.micro"
+}
+
+variable "ssh_private_key" {
+  default = "./ansible/EC2-django.pem"
 }
