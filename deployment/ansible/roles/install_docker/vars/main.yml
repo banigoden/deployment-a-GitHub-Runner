@@ -21,20 +21,20 @@ install_docker_pip_modules:
   - pymysql
 
 install_docker_redhat_packages:
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
   - python3-pip
   - python3-devel
-  - mysql-8.0*
   - python3-setuptools
   - git
   - jq
   - vim
+  # - docker-ce
+  # - docker-ce-cli
+  # - containerd.io
+  # - mysql-8.0*
 
 install_docker_pip_modules_red:
   - passlib
-  - docker
-  - docker-compose
+  # - docker
+  # - docker-compose
   - pymysql
-  - pipenv
+  # - pipenv

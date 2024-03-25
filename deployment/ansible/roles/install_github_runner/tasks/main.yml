@@ -1,58 +1,59 @@
 ---
 - name: Create user for GitHub Actions Runner
   ansible.builtin.user:
-    name: "{{ runner_user }}"
+    name: "{{ install_github_runner_runner_user }}"
     state: present
     createhome: true
   tags:
     - configuration
 
+- name: Create directory for GitHub Runner
+  ansible.builtin.file:
+    path: "{{ install_github_runner_github_runner_dir }}"
+    state: directory
+    owner: "{{ install_github_runner_github_runner_user }}"
+    group: "{{ install_github_runner_github_runner_user }}"
+    mode: "0644"
+
 - name: Install GitHub Runner
   ansible.builtin.get_url:
-    url: >
-      "https://github.com/actions/runner/releases/download
-      /v2.282.1/actions-runner-linux-x64-2.282.1.tar.gz"
-    dest: "{{ actions_runner_tar_path }}"
+    url: "{{ install_github_runner_github_runner_url }}"
+    dest: "/tmp/actions-runner.tar.gz"
     mode: "0644"
   tags:
     - configuration
 
 - name: Extract GitHub Runner
   ansible.builtin.unarchive:
-    src: "{{ actions_runner_tar_path }}"
-    dest: "/home/ec2-user/actions-runner"
+    src: "{{ install_github_runner_actions_runner_tar_path }}"
+    dest: "{{ install_github_runner_github_runner_dir }}"
     remote_src: true
+    creates: "{{ install_github_runner_github_runner_dir }}/config.sh"
   tags:
     - configuration
 
 - name: Remove archive
   ansible.builtin.file:
-    path: "{{ actions_runner_tar_path }}"
+    path: "{{ install_github_runner_actions_runner_tar_path }}"
     state: absent
   tags:
     - configuration
 
 - name: Add user to 'docker' group
   ansible.builtin.user:
-    name: "{{ runner_user }}"
+    name: "{{ install_github_runner_runner_user }}"
     group: docker
     append: true
   tags:
     - configuration
 
-- name: Configuring runner
-  shell: ./config.cmd --url https://github.com/lek-x/vmware_terraform --token AIJK6DVV3G3YKDZXWXGTDZDF6V5KK 
-  register: confrunner
-  changed_when: confrunner.rc != 2
-  failed_when: confrunner.rc != 0
-
 - name: Create Systemd Unit
   ansible.builtin.template:
     src: "templates/github-runner.service.j2"
     dest: "/etc/systemd/system/{{ github_runner_name }}.service"
-    owner: "{{ runner_user }}"
-    group: "{{ runner_user }}"
+    owner: "{{ install_github_runner_runner_user }}"
+    group: "{{ install_github_runner_runner_user }}"
     mode: "0644"
   tags:
     - configuration
-  notify: 
+  notify: Reload systemd

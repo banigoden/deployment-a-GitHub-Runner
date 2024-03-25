@@ -27,23 +27,24 @@ resource "aws_instance" "django" {
   tags = {
     Name = "web-production"
   }
+
+  # provisioner "remote-exec" {
+  #   inline = ["sudo hostname"]
+
+  #   connection {
+  #     type        = "ssh"
+  #     user        = "ec2-user"
+  #     private_key = "$file{${path.module}./ansible/EC2-django.pem}"
+  #     host        = self.public_ip
+  #   }
+  # }
+}
+
+resource "null_resource" "run_ansible" {
+
   depends_on = [aws_instance.django]
 
-  #Because AWS instance needs some time to be ready for usage we will use below trick with remote-exec.
-  #As per documentation remote-exec waits for successful connection and only after this runs command.
-  provisioner "remote-exec" {
-    inline = ["sudo hostname"]
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = file("${path.module}./ansible/EC2-django.pem")
-      host        = self.public_ip
-    }
-  }
-
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.module}./ansible/inventory.tpl ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user"
+    command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user"
   }
-
 }

@@ -1,6 +1,6 @@
 
 resource "local_file" "inventory" {
-  filename        = "${path.module}./ansible/inventory.tpl"
+  filename        = "${path.module}./ansible/inventory/ansible-inventory"
   file_permission = "0640"
   content = templatefile("${path.module}/templates/inventory.tftpl",
     {
