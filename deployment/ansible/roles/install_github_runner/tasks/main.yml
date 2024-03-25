@@ -1,7 +1,7 @@
 ---
 - name: Create user for GitHub Actions Runner
   ansible.builtin.user:
-    name: "{{ install_github_runner_runner_user }}"
+    name: "{{ install_github_runner_user }}"
     state: present
     createhome: true
   tags:
@@ -9,15 +9,15 @@
 
 - name: Create directory for GitHub Runner
   ansible.builtin.file:
-    path: "{{ install_github_runner_github_runner_dir }}"
+    path: "{{ install_github_runner_dir }}"
     state: directory
-    owner: "{{ install_github_runner_github_runner_user }}"
-    group: "{{ install_github_runner_github_runner_user }}"
+    owner: "{{ install_github_runner_user }}"
+    group: "{{ install_github_runner_user }}"
     mode: "0644"
 
 - name: Install GitHub Runner
   ansible.builtin.get_url:
-    url: "{{ install_github_runner_github_runner_url }}"
+    url: "{{ install_github_runner_url }}"
     dest: "/tmp/actions-runner.tar.gz"
     mode: "0644"
   tags:
@@ -25,34 +25,26 @@
 
 - name: Extract GitHub Runner
   ansible.builtin.unarchive:
-    src: "{{ install_github_runner_actions_runner_tar_path }}"
-    dest: "{{ install_github_runner_github_runner_dir }}"
+    src: "{{ install_github_runner_tar_path }}"
+    dest: "{{ install_github_runner_dir }}"
     remote_src: true
-    creates: "{{ install_github_runner_github_runner_dir }}/config.sh"
+    creates: "{{ install_github_runner_dir }}/config.sh"
   tags:
     - configuration
 
 - name: Remove archive
   ansible.builtin.file:
-    path: "{{ install_github_runner_actions_runner_tar_path }}"
+    path: "{{ install_github_runner_tar_path }}"
     state: absent
-  tags:
-    - configuration
-
-- name: Add user to 'docker' group
-  ansible.builtin.user:
-    name: "{{ install_github_runner_runner_user }}"
-    group: docker
-    append: true
   tags:
     - configuration
 
 - name: Create Systemd Unit
   ansible.builtin.template:
     src: "templates/github-runner.service.j2"
-    dest: "/etc/systemd/system/{{ github_runner_name }}.service"
-    owner: "{{ install_github_runner_runner_user }}"
-    group: "{{ install_github_runner_runner_user }}"
+    dest: "/etc/systemd/system/{{ install_github_runner_name }}.service"
+    owner: "{{ install_github_runner_user }}"
+    group: "{{ install_github_runner_user }}"
     mode: "0644"
   tags:
     - configuration
