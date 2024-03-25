@@ -1,4 +1,5 @@
 variable "aws_region" {
+  type        = string
   description = "Default AWS Region"
   default     = "eu-central-1"
 }
@@ -36,8 +37,4 @@ variable "instance_name" {
 variable "size" {
   type    = string
   default = "t2.micro"
-}
-
-variable "ssh_private_key" {
-  default = "./ansible/EC2-django.pem"
 }

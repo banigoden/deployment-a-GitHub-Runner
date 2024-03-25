@@ -14,7 +14,7 @@
 
 - name: Install Docker and other packages
   ansible.builtin.dnf:
-    name: "{{ redhat_packages }}"
+    name: "{{ install_docker_redhat_packages }}"
     state: present
     disable_gpg_check: true
 
@@ -27,7 +27,7 @@
     state: directory
   loop:
     - { dest: '/root/.docker/', mode: '0644', owner: 'root', group: 'root' }
-    - { dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'scp', group: 'scp' }
+    - { dest: '/var/lib/home/scp/.docker/', mode: '0744', owner: 'root', group: 'root' }
 
 - name: Install Docker Compose
   ansible.builtin.get_url:
@@ -38,7 +38,8 @@
 
 - name: Install Python modules
   ansible.builtin.pip:
-    name: "{{ pip_modules_red }}"
+    name: "{{ install_docker_pip_modules_red }}"
+    extra_args: --force-reinstall
 
 - name: Create Docker.d dir
   ansible.builtin.file:

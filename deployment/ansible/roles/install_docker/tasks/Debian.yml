@@ -1,7 +1,7 @@
 ---
 - name: Install apt tools
   ansible.builtin.apt:
-    name: "{{ apt_packages }}"
+    name: "{{  install_docker_apt_packages }}"
     state: present
 
 - name: Add key for  docker  repo
@@ -29,7 +29,7 @@
 
 - name: Install packages
   ansible.builtin.apt:
-    name: "{{ apt_packages }}"
+    name: "{{  install_docker_apt_packages }}"
     state: present
 
 - name: Install Python modules
