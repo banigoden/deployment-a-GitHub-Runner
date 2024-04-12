@@ -1,7 +1,7 @@
 ---
-install_github_runner_name: github-runner
-install_github_runner_tar_path: "/tmp/actions-runner.tar.gz"
-install_github_runner_version: "2.314.1"  # Specify the version
-install_github_runner_user: "ec2-user"       # Specify the user under which the runner will run
-install_github_runner_dir: "/home/{{ install_github_runner_user }}/actions-runner"
-install_github_runner_url: "https://github.com/actions/runner/releases/download/v{{ install_github_runner_version }}/actions-runner-linux-x64-{{ install_github_runner_version }}.tar.gz"
+install_github_runner_actions_runner_version: "2.303.0"
+install_github_runner_actions_runner_dir: "/home/{{ install_github_runner_runner_user }}"
+install_github_runner_actions_runner_url: "https://github.com/actions/runner/releases/download/v{{ install_github_runner_actions_runner_version }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+install_github_runner_github_repo_url: "https://github.com/banigoden/self-hosted-runners"
+install_github_runner_github_repo_token: "AFMV4ZEAFA4CS2RIGNSQ3L3GDEJBC"
+install_github_runner_runner_user: "ec2-user"

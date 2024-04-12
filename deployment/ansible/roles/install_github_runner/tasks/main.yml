@@ -1,51 +1,60 @@
 ---
-- name: Create user for GitHub Actions Runner
+# Create user and home directory
+- name: Create user and home directory
   ansible.builtin.user:
-    name: "{{ install_github_runner_user }}"
+    name: "{{ install_github_runner_runner_user }}"
+    home: "/home/{{ install_github_runner_runner_user }}"
     state: present
-    createhome: true
-  tags:
-    - configuration
 
-- name: Create directory for GitHub Runner
-  ansible.builtin.file:
-    path: "{{ install_github_runner_dir }}"
-    state: directory
-    owner: "{{ install_github_runner_user }}"
-    group: "{{ install_github_runner_user }}"
-    mode: "0644"
-
-- name: Install GitHub Runner
+# Download actions-runner package
+- name: Download actions-runner package
   ansible.builtin.get_url:
-    url: "{{ install_github_runner_url }}"
-    dest: "/tmp/actions-runner.tar.gz"
+    url: "{{ install_github_runner_actions_runner_url }}"
+    dest: >
+      "{{ install_github_runner_actions_runner_dir }}
+      /actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
     mode: "0644"
-  tags:
-    - configuration
 
-- name: Extract GitHub Runner
+# Extract actions-runner
+- name: Extract actions-runner package
   ansible.builtin.unarchive:
-    src: "{{ install_github_runner_tar_path }}"
-    dest: "{{ install_github_runner_dir }}"
+    src: >
+      "{{ install_github_runner_actions_runner_dir }}
+      /actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+    dest: "{{ install_github_runner_actions_runner_dir }}"
     remote_src: true
-    creates: "{{ install_github_runner_dir }}/config.sh"
-  tags:
-    - configuration
+    creates: "{{ install_github_runner_actions_runner_dir }}/config.sh"
 
-- name: Remove archive
-  ansible.builtin.file:
-    path: "{{ install_github_runner_tar_path }}"
-    state: absent
-  tags:
-    - configuration
+# Change ownership of actions-runner directory
+- name: Change ownership of actions-runner directory
+  ansible.builtin.command:
+    cmd: "sudo chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} {{ install_github_runner_actions_runner_dir }}"
+  changed_when: false
 
-- name: Create Systemd Unit
+# Run configuration
+- name: Run configuration
+  ansible.builtin.command:
+    cmd: >
+      "./config.sh --url {{ install_github_runner_github_repo_url }} " +
+      "--token {{ install_github_runner_github_repo_token }}"
+    chdir: "{{ install_github_runner_actions_runner_dir }}"
+  become: false
+  changed_when: false
+
+
+# Start GitHub Runner service
+- name: Start GitHub Runner service
+  ansible.builtin.systemd:
+    name: github-runner
+    state: started
+    enabled: true
+
+# Create Systemd unit file
+- name: Create Systemd unit file
   ansible.builtin.template:
-    src: "templates/github-runner.service.j2"
-    dest: "/etc/systemd/system/{{ install_github_runner_name }}.service"
-    owner: "{{ install_github_runner_user }}"
-    group: "{{ install_github_runner_user }}"
+    src: templates/github-runner.service.j2
+    dest: /etc/systemd/system/github-runner.service
+    owner: "{{ install_github_runner_runner_user }}"
+    group: "{{ install_github_runner_runner_user }}"
     mode: "0644"
-  tags:
-    - configuration
-  notify: Reload systemd
+  notify: Reload systems

@@ -9,10 +9,10 @@ resource "aws_key_pair" "ssh_key" {
 }
 
 resource "local_sensitive_file" "pem_files" {
-  filename        = "${path.module}./ansible/EC2-${var.instance_name}.pem"
-  file_permission = "0600"
-  # directory_permission = "0700"
-  content = tls_private_key.ec2_key.private_key_pem
+  filename             = "${path.module}./ansible/EC2-${var.instance_name}.pem"
+  file_permission      = "0600"
+  directory_permission = "0700"
+  content              = tls_private_key.ec2_key.private_key_pem
 }
 
 # Create an AWS instance
@@ -43,6 +43,10 @@ resource "aws_instance" "django" {
 resource "null_resource" "run_ansible" {
 
   depends_on = [aws_instance.django]
+
+  provisioner "local-exec" {
+    command = "sleep 20"
+  }
 
   provisioner "local-exec" {
     command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user"
