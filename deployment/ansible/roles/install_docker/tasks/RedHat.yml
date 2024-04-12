@@ -1,19 +1,19 @@
 ---
-- name: Add repository
+- name: Add Docker CE repository
   ansible.builtin.yum_repository:
     name: docker_ce
-    description: docker_ce
-    baseurl: >
-     https://download.docker.com/linux/centos/$releasever/$basearch/stable
-    enabled: true
+    description: Docker CE Repository for Amazon Linux 2
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
     gpgcheck: true
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: true
 
 - name: Update cache
   ansible.builtin.yum:
     update_cache: true
 
 - name: Install Docker and other packages
-  ansible.builtin.dnf:
+  ansible.builtin.yum:
     name: "{{ install_docker_redhat_packages }}"
     state: present
     disable_gpg_check: true

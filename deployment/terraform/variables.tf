@@ -26,7 +26,7 @@ variable "private_subnet_cidr_block" {
 variable "ami_number" {
   description = "AMI number"
   type        = string
-  default     = "ami-0a23a9827c6dab833"
+  default     = "ami-0db3b3e2b9f049df7"
 }
 
 variable "instance_name" {

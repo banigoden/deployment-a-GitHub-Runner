@@ -21,12 +21,13 @@ install_docker_pip_modules:
   - pymysql
 
 install_docker_redhat_packages:
-  - python3-pip
-  - python3-devel
-  - python3-setuptools
+  # - python3-pip
+  # - python3-devel
+  # - python3-setuptools
   - git
   - jq
   - vim
+  - libicu
   # - docker-ce
   # - docker-ce-cli
   # - containerd.io
