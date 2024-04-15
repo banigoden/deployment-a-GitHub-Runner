@@ -1,6 +1,6 @@
 ---
-# handlers file for install_github_runner
 - name: Reload systemd
   ansible.builtin.systemd:
+    name: github-runner
     state: reloaded
-    daemon_reload: yes
+    daemon_reload: true

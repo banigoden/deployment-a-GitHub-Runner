@@ -6,4 +6,4 @@ install_github_runner_actions_runner_url: "https://github.com/actions/runner/rel
 # yamllint enable rule: line-length
 install_github_runner_github_repo_url: "https://github.com/banigoden/self-hosted-runners"
 install_github_runner_github_repo_token: "AFMV4ZDNAHGH6ADBMAXB6WDGDU5JC"
-install_github_runner_runner_user: "gitrunner" 
+install_github_runner_runner_user: "gitrunner"
