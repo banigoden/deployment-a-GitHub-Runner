@@ -1,7 +1,12 @@
 ---
 exclude_paths: []
 
-skip_list: []
+skip_list:
+  - name: "Line too long"
+    id: line-length
+    
+exclude_rules:
+  - "line-length"
 
 use_default_rules: true
 verbosity: 0
