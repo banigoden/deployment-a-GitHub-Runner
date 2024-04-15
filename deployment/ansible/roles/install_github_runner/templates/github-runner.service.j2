@@ -3,12 +3,12 @@ Description=GitHub Runner Service
 After=network.target
 
 [Service]
-WorkingDirectory=/opt/github-runner/{{ github_runner_name }}
-ExecStart=/opt/github-runner/actions-runner/runsvc.sh
+WorkingDirectory={{ install_github_runner_actions_runner_dir }}
+ExecStart={{ install_github_runner_actions_runner_dir }}/actions-runner/runsvc.sh
 Restart=always
 RestartSec=3
-User={{ runner_user }}
-Group={{ runner_user }}
+User={{ install_github_runner_runner_user }}
+Group={{ install_github_runner_runner_user }}
 KillMode=process
 
 [Install]

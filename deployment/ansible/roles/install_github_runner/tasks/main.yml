@@ -10,44 +10,30 @@
 - name: Download actions-runner package
   ansible.builtin.get_url:
     url: "{{ install_github_runner_actions_runner_url }}"
-    dest: >
-      "{{ install_github_runner_actions_runner_dir }}
-      /actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+    dest: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
     mode: "0644"
 
 # Extract actions-runner
 - name: Extract actions-runner package
   ansible.builtin.unarchive:
-    src: >
-      "{{ install_github_runner_actions_runner_dir }}
-      /actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+    src: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
     dest: "{{ install_github_runner_actions_runner_dir }}"
     remote_src: true
     creates: "{{ install_github_runner_actions_runner_dir }}/config.sh"
 
-# Change ownership of actions-runner directory
-- name: Change ownership of actions-runner directory
-  ansible.builtin.command:
-    cmd: "sudo chown -R {{ ansible_user_id }}:{{ ansible_user_gid }} {{ install_github_runner_actions_runner_dir }}"
-  changed_when: false
-
 # Run configuration
 - name: Run configuration
   ansible.builtin.command:
-    cmd: >
-      "./config.sh --url {{ install_github_runner_github_repo_url }} " +
-      "--token {{ install_github_runner_github_repo_token }}"
+    cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }}"
     chdir: "{{ install_github_runner_actions_runner_dir }}"
-  become: false
-  changed_when: false
+  become_user: gitrunner
 
 
-# Start GitHub Runner service
-- name: Start GitHub Runner service
-  ansible.builtin.systemd:
-    name: github-runner
-    state: started
-    enabled: true
+# Start GitHub Runner 
+- name: Run script ./run.sh
+  ansible.builtin.shell:
+    cmd: ./run.sh
+    chdir: "{{ install_github_runner_actions_runner_dir }}"
 
 # Create Systemd unit file
 - name: Create Systemd unit file
