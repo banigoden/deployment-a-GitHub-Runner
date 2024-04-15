@@ -10,12 +10,14 @@
 - name: Download actions-runner package
   ansible.builtin.get_url:
     url: "{{ install_github_runner_actions_runner_url }}"
+    # yamllint disable rule:line-length
     dest: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
     mode: "0644"
 
 # Extract actions-runner
 - name: Extract actions-runner package
   ansible.builtin.unarchive:
+  # yamllint disable rule:line-length
     src: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
     dest: "{{ install_github_runner_actions_runner_dir }}"
     remote_src: true
@@ -26,14 +28,16 @@
   ansible.builtin.command:
     cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }}"
     chdir: "{{ install_github_runner_actions_runner_dir }}"
+  become: true
   become_user: gitrunner
+  changed_when: false
 
-
-# Start GitHub Runner 
+# Start GitHub Runner
 - name: Run script ./run.sh
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: ./run.sh
     chdir: "{{ install_github_runner_actions_runner_dir }}"
+  changed_when: false
 
 # Create Systemd unit file
 - name: Create Systemd unit file
@@ -43,4 +47,5 @@
     owner: "{{ install_github_runner_runner_user }}"
     group: "{{ install_github_runner_runner_user }}"
     mode: "0644"
-  notify: Reload systems
+  notify: Reload systemd
+  changed_when: false
