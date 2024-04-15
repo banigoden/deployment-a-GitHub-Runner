@@ -41,7 +41,6 @@ resource "aws_instance" "django" {
 }
 
 resource "null_resource" "run_ansible" {
-
   depends_on = [aws_instance.django]
 
   provisioner "local-exec" {
