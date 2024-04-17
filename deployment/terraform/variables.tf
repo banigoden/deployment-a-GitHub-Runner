@@ -38,3 +38,5 @@ variable "size" {
   type    = string
   default = "t2.micro"
 }
+
+# add token varible

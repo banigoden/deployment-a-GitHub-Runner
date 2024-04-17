@@ -3,7 +3,10 @@ install_github_runner_actions_runner_version: "2.315.0"
 install_github_runner_actions_runner_dir: "/home/{{ install_github_runner_runner_user }}"
 # yamllint disable rule:line-length
 install_github_runner_actions_runner_url: "https://github.com/actions/runner/releases/download/v{{ install_github_runner_actions_runner_version }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
-# yamllint enable rule: line-length
 install_github_runner_github_repo_url: "https://github.com/banigoden/self-hosted-runners"
-install_github_runner_github_repo_token: "AFMV4ZDNAHGH6ADBMAXB6WDGDU5JC"
 install_github_runner_runner_user: "gitrunner"
+install_github_runner_apt_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common

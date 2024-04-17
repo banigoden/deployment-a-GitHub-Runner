@@ -28,16 +28,6 @@ resource "aws_instance" "django" {
     Name = "web-production"
   }
 
-  # provisioner "remote-exec" {
-  #   inline = ["sudo hostname"]
-
-  #   connection {
-  #     type        = "ssh"
-  #     user        = "ec2-user"
-  #     private_key = "$file{${path.module}./ansible/EC2-django.pem}"
-  #     host        = self.public_ip
-  #   }
-  # }
 }
 
 resource "null_resource" "run_ansible" {

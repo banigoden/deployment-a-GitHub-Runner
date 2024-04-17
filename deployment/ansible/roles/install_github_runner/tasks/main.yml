@@ -28,16 +28,16 @@
   ansible.builtin.command:
     cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }}"
     chdir: "{{ install_github_runner_actions_runner_dir }}"
-  become: true
   become_user: gitrunner
-  changed_when: false
+  register: run_status
+
+#   changed_when: run_status.rc == 0  # indopetent
 
 # Start GitHub Runner
 - name: Run script ./run.sh
   ansible.builtin.command:
     cmd: ./run.sh
     chdir: "{{ install_github_runner_actions_runner_dir }}"
-  changed_when: false
 
 # Create Systemd unit file
 - name: Create Systemd unit file
@@ -48,4 +48,9 @@
     group: "{{ install_github_runner_runner_user }}"
     mode: "0644"
   notify: Reload systemd
-  changed_when: false
+
+  # enabled true for handler add new task
+
+
+ # changed_when ansible command/
+ # add block in download and configured git_runner + add variables in vars/main.yml
