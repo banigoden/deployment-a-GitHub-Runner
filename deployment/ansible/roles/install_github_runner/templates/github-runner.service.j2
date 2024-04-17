@@ -2,9 +2,10 @@
 Description=GitHub Runner Service
 After=network.target
 
+
 [Service]
 WorkingDirectory={{ install_github_runner_actions_runner_dir }}
-ExecStart={{ install_github_runner_actions_runner_dir }}/actions-runner/runsvc.sh
+ExecStart={{ install_github_runner_actions_runner_dir }}/run.sh
 Restart=always
 RestartSec=3
 User={{ install_github_runner_runner_user }}
