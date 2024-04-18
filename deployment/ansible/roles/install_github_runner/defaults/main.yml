@@ -1,3 +1,2 @@
 ---
-# defaults file for install_github_runner
- install_github_runner_github_repo_token: AFMV4ZEBLUGO5HHPGVDQHFLGEEN72  # " -e {{ lookup('env', 'token') }}"
+install_github_runner_github_repo_token: "{{ lookup('ansible.builtin.env', 'GITHUB_REPO_TOKEN') }}"
