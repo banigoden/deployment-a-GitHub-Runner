@@ -28,14 +28,7 @@ install_docker_redhat_packages:
   - jq
   - vim
   - libicu
-  # - docker-ce
-  # - docker-ce-cli
-  # - containerd.io
-  # - mysql-8.0*
 
 install_docker_pip_modules_red:
   - passlib
-  # - docker
-  # - docker-compose
   - pymysql
-  # - pipenv
