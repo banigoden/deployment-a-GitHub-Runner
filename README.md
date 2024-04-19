@@ -20,28 +20,28 @@ a Jinja2 template.
 
 ## How to
 
-1. **Poetry Environment Setup**
+1. **1.Poetry Environment Setup**
 - Create a Poetry environment:
 
 ```bash
 poetry env create
 ```
 
-1. **Pre-commit Hooks**
+1. **2.Pre-commit Hooks**
 - Install pre-commit hooks:
 
 ```bash
 pre-commit install
 ```
 
-1. **Conventional Commit Messages**
+1. **3.Conventional Commit Messages**
    - Install `cz` for conventional commit messages:
 
     ```bash
     npm install -g commitizen
     ```
 
-1. **Terraform Deployment**
+1. **4.Terraform Deployment**
    - Deploy VM using Terraform (ensure correct environment variables
    in the `.env` file):
 
@@ -49,7 +49,7 @@ pre-commit install
     terraform apply
     ```
 
-1. **Ansible Installation of GitHub Runner**
+1. **5.Ansible Installation of GitHub Runner**
    - **Create User and Home Directory (Ansible Role)**
       - Execute the following command:
 
