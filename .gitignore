@@ -13,5 +13,6 @@
 .DS_Store
 .env
 .pem
-.tfstate
+*.tfstate
+*.tfstate.backup
 /env_file.env
