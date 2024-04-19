@@ -3,6 +3,8 @@
   hosts: all
   become: true
   gather_facts: true
+  vars:
+    install_github_runner_github_repo_token: "{{ lookup('env', 'GITHUB_REPO_TOKEN:') }}"
   roles:
     - role: install_docker
       tags: ["docker"]

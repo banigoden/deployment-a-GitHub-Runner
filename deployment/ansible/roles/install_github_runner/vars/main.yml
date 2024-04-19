@@ -1,5 +1,4 @@
 ---
-install_github_runner_actions_runner_version: "2.315.0"
 install_github_runner_actions_runner_dir: "/home/{{ install_github_runner_runner_user }}"
 # yamllint disable rule:line-length
 install_github_runner_actions_runner_url: "https://github.com/actions/runner/releases/download/v{{ install_github_runner_actions_runner_version }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"

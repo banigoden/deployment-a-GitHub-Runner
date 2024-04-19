@@ -20,48 +20,48 @@ a Jinja2 template.
 
 ## How to
 
-1. **.Poetry Environment Setup**
+1. **Poetry Environment Setup**
   - Create a Poetry environment:
 
-  ```bash
-  poetry env create
-  ```
+    ```bash
+    poetry env create
+    ```
 
-1. **.Pre-commit Hooks**
+2. **Pre-commit Hooks**
   - Install pre-commit hooks:
 
-```bash
-pre-commit install
-```
+    ```bash
+    pre-commit install
+    ```
 
-1. **.Conventional Commit Messages**
-   - Install `cz` for conventional commit messages:
+3. **Conventional Commit Messages**
+- Install `cz` for conventional commit messages:
 
     ```bash
     npm install -g commitizen
     ```
 
-1. **.Terraform Deployment**
-   - Deploy VM using Terraform (ensure correct environment variables
+4. **Terraform Deployment**
+- Deploy VM using Terraform (ensure correct environment variables
    in the `.env` file):
 
     ```bash
     terraform apply
     ```
 
-1. **.Ansible Installation of GitHub Runner**
-   - **Create User and Home Directory (Ansible Role)**
-      - Execute the following command:
+5. **Ansible Installation of GitHub Runner**
+- **Create User and Home Directory (Ansible Role)**
+- Execute the following command:
 
-      ```bash
-      ansible-playbook playbook.yml --tags install_github_runner
-      ```
+  ```bash
+  ansible-playbook playbook.yml --tags install_github_runner
+  ```
 
-   - **Install GitHub Runner Agent**
-   - **Manual Installation:**
-   - Follow the manual instructions provided by GitHub.
-   - **Ansible Installation:**
-   - Execute the following command:
+- **Install GitHub Runner Agent**
+- **Manual Installation:**
+- Follow the manual instructions provided by GitHub.
+- **Ansible Installation:**
+- Execute the following command:
 
     ```bash
     ansible-playbook playbook.yml --tags install_github_runner

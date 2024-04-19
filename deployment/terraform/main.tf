@@ -15,7 +15,6 @@ resource "local_sensitive_file" "pem_files" {
   content              = tls_private_key.ec2_key.private_key_pem
 }
 
-# Create an AWS instance
 resource "aws_instance" "django" {
   ami                         = var.ami_number
   instance_type               = var.size
@@ -38,6 +37,6 @@ resource "null_resource" "run_ansible" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user"
+    command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user -e @env_file.env --ask-vault-pass"
   }
 }
