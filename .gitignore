@@ -11,8 +11,8 @@
 
 .idea/
 .DS_Store
-.env
-.pem
+*.env
+*.pem
 *.tfstate
 *.tfstate.backup
 /env_file.env
