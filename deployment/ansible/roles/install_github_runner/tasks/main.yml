@@ -6,10 +6,10 @@
     home: "/home/{{ install_github_runner_runner_user }}"
     state: present
 
-# - name: Check if GitHub Runner configuration file exists
-#   ansible.builtin.stat:
-#     path: "{{ install_github_runner_actions_runner_dir }}/config.sh"
-#   register: github_actions_configured
+- name: Check if GitHub Runner configuration file exists
+  ansible.builtin.stat:
+    path: "{{ install_github_runner_actions_runner_dir }}/config.sh"
+  register: github_actions_configured
 
 - name: Download, extract, and configure GitHub Runner
   block:
