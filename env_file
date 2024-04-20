@@ -1,0 +1,3 @@
+read -s -r -p "Input git token here: " git_token
+
+export TF_VAR_GIT_TOKEN=$git_token
