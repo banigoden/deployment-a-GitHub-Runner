@@ -2,15 +2,15 @@
 
 ## Description
 
-This repository facilitates the deployment of a GitHub Runner/Admin instance onto
-preferred Linux VMs.It sets up a Poetry environment for managing dependencies
-related to Terraform and Ansible. Additionally, it incorporates pre-commit
-hooks defined in `.pre-commit-config.yaml` and installs `cz`for committing changes
-with conventional commit messages. The deployment process involves deploying
-a VMusing Terraform and installing the GitHub Runner using Ansible.
-This typically includes creating a user and home directory, installing the GitHub
-Runner agent either manually or through Ansible, and creatinga systemd unit using
-a Jinja2 template.
+This repository facilitates the deployment of a GitHub Runner/Admin instance into
+preferred Linux VMs.It sets up a Poetry environment for managing dependencies 
+related to Terraform and Ansible. Additionally, it incorporates pre-commit 
+hooks defined in .pre-commit-config.yaml and installs cz for committing changes
+with conventional commit messages. The deployment process involves deploying 
+a VM using Terraform and installing the GitHub Runner using Ansible. This 
+typically includes creating a user and home directory, installing the GitHub Runner
+agent either manually or through Ansible, and creating a systemd unit using a 
+Jinja2 template.
 
 ## Requirements
 
