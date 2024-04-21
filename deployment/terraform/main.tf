@@ -37,6 +37,6 @@ resource "null_resource" "run_ansible" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user -e install_github_runner_github_repo_token=${GIT_TOKEN}"
+    command = "ansible-playbook -i ${path.module}./ansible/inventory/ansible-inventory ${path.module}./ansible/playbook.yml --private-key ${path.module}./ansible/EC2-django.pem --user ec2-user -e install_github_runner_github_repo_token=${var.GIT_TOKEN}"
   }
 }

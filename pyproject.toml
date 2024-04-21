@@ -6,7 +6,7 @@ authors = ["Denis Bandurin <banigoden@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 python-terraform = "^0.10.1"
 ansible = "^9.2.0"
 psycopg2-binary = {version = "^2.9.6", extras = ["postgres"]}

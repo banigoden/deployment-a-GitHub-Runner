@@ -39,10 +39,8 @@ variable "size" {
   default = "t2.micro"
 }
 
-
-variable GIT_TOKEN {
+variable "GIT_TOKEN" {
   type        = string
-  default     = "xxxxxxx"
+  default     = "xxxxxxxxxxxxxxxxxxx"
   description = "description"
 }
-

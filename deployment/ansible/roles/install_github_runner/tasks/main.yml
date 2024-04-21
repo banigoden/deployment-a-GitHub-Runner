@@ -32,7 +32,7 @@
     - name: Run configuration
       ansible.builtin.command:
       # yamllint disable rule:line-length
-        cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }}"
+        cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }} --unattended"
         chdir: "{{ install_github_runner_actions_runner_dir }}"
       become: true
       become_user: gitrunner
