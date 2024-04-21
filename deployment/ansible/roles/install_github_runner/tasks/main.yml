@@ -6,38 +6,45 @@
     home: "/home/{{ install_github_runner_runner_user }}"
     state: present
 
-# Download actions-runner package
-- name: Download actions-runner package
-  ansible.builtin.get_url:
-    url: "{{ install_github_runner_actions_runner_url }}"
-    # yamllint disable rule:line-length
-    dest: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
-    mode: "0644"
+- name: Check if GitHub Runner configuration file exists
+  ansible.builtin.stat:
+    path: "{{ install_github_runner_actions_runner_dir }}/config.sh"
+  register: github_actions_configured
 
-# Extract actions-runner
-- name: Extract actions-runner package
-  ansible.builtin.unarchive:
-  # yamllint disable rule:line-length
-    src: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
-    dest: "{{ install_github_runner_actions_runner_dir }}"
-    remote_src: true
-    creates: "{{ install_github_runner_actions_runner_dir }}/config.sh"
+- name: Download, extract, and configure GitHub Runner
+  block:
+    - name: Download actions-runner package
+      when: not github_actions_configured.stat.exists
+      ansible.builtin.get_url:
+        url: "{{ install_github_runner_actions_runner_url }}"
+        # yamllint disable rule:line-length
+        dest: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+        mode: "0644"
 
-# Run configuration
-- name: Run configuration
-  ansible.builtin.command:
-    cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }}"
-    chdir: "{{ install_github_runner_actions_runner_dir }}"
-  become_user: gitrunner
-  register: run_status
+    - name: Extract actions-runner package
+      ansible.builtin.unarchive:
+      # yamllint disable rule:line-length
+        src: "{{ install_github_runner_actions_runner_dir }}/actions-runner-linux-x64-{{ install_github_runner_actions_runner_version }}.tar.gz"
+        dest: "{{ install_github_runner_actions_runner_dir }}"
+        remote_src: true
+        creates: "{{ install_github_runner_actions_runner_dir }}/config.sh"
 
-#   changed_when: run_status.rc == 0  # indopetent
+    - name: Run configuration
+      ansible.builtin.command:
+      # yamllint disable rule:line-length
+        cmd: "./config.sh --url {{ install_github_runner_github_repo_url }} --token {{ install_github_runner_github_repo_token }} --unattended"
+        chdir: "{{ install_github_runner_actions_runner_dir }}"
+      become: true
+      become_user: gitrunner
+      register: run_status
+      changed_when: "run_status.rc == 0"
 
 # Start GitHub Runner
 - name: Run script ./run.sh
   ansible.builtin.command:
     cmd: ./run.sh
     chdir: "{{ install_github_runner_actions_runner_dir }}"
+    creates: "{{ install_github_runner_actions_runner_dir }}/script_executed_marker_file"
 
 # Create Systemd unit file
 - name: Create Systemd unit file
@@ -49,8 +56,8 @@
     mode: "0644"
   notify: Reload systemd
 
-  # enabled true for handler add new task
-
-
- # changed_when ansible command/
- # add block in download and configured git_runner + add variables in vars/main.yml
+- name: Ensure GitHubRunner is enabled
+  ansible.builtin.systemd:
+    name: github-runner
+    enabled: true
+    daemon_reload: true
